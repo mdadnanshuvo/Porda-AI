@@ -41,6 +41,26 @@ title = "PordaAi1.3(a92)"
 
 
 class SettingsWindow(QDialog):
+    """
+    SettingsWindow is a QDialog-based window for configuring application settings.
+    This window provides a two-column interface with grouped setting categories on the left and their respective options on the right. It supports saving, applying, and resetting settings, as well as managing application startup, hotkeys, detection options, and resource limits.
+    Attributes:
+        parent (QWidget): The parent widget.
+        settings (dict): Loaded settings values.
+        current_settings (dict): Reference to the parent's current settings.
+        group_buttons (list): List of QPushButton objects for setting groups.
+        stacked_widget (QStackedWidget): Displays the selected group's settings.
+        Various widgets for each setting option.
+    Methods:
+        save_settings_value(): Save current settings to persistent storage.
+        update_setting(): Apply current settings to the parent.
+        default_settings_value(): Reset settings to default values.
+        change_status(): Toggle detection activity status.
+        close_app(): Close the application.
+        show_group_properties(): Switch displayed settings group.
+        Various getters for individual settings.
+    """
+
     def __init__(self, parent=None):
         super().__init__()
         self.title = title
@@ -216,7 +236,13 @@ class SettingsWindow(QDialog):
         self.setLayout(main_layout)
         self.getStatus()  # This shows Status in settings window
 
-    def onTimeout(self):
+    def onTimeout(self) -> None:
+        """
+        Handles the timeout event by drawing text on the screen using device context.
+        Returns:
+            None
+        """
+
         rect = RECT()
         hwnd = 0
         hdc = self.GetDC(hwnd)
@@ -227,7 +253,15 @@ class SettingsWindow(QDialog):
 
         self.ReleaseDC(hwnd, hdc)
 
-    def show_group_properties(self):
+    def show_group_properties(self) -> None:
+        """
+        Handles the display and styling of group property panels based on the clicked group button.
+        This method identifies which group button was clicked, updates the stacked widget to show
+        the corresponding group properties, and visually highlights the active button.
+        Returns:
+            None
+        """
+
         sender_button = self.sender()
         index = sender_button.text()
 
@@ -255,7 +289,16 @@ class SettingsWindow(QDialog):
             else:
                 btn.setStyleSheet("")
 
-    def contact_layout(self):
+    def contact_layout(self) -> QWidget:
+        """
+        Creates and returns a QWidget containing a vertically arranged, scrollable QTextBrowser
+        for displaying HTML content with external links enabled.
+        The QTextBrowser is placed inside a QScrollArea to allow scrolling, and the entire layout
+        is aligned to the top of the widget.
+        Returns:
+            QWidget: The widget containing the scrollable text browser layout.
+        """
+
         contact_widget = QWidget()
         main_layout = QVBoxLayout()
 
@@ -277,7 +320,14 @@ class SettingsWindow(QDialog):
         main_layout.setAlignment(Qt.AlignTop)
         return contact_widget
 
-    def tracking_settings(self):
+    def tracking_settings(self) -> QWidget:
+        """
+        Creates and returns a QWidget containing tracking settings UI elements.
+        The widget currently displays a label indicating that the feature will be available in the next update.
+        Returns:
+            QWidget: The widget containing the tracking settings UI.
+        """
+
         tracking_widget = QWidget()
         main_layout = QVBoxLayout()
         label = QLabel("On Next Update")
@@ -289,7 +339,17 @@ class SettingsWindow(QDialog):
 
         return tracking_widget
 
-    def scalling_settings(self):
+    def scalling_settings(self) -> QWidget:
+        """
+        Creates and returns a QWidget containing scaling-related settings UI components.
+        The widget includes:
+            - A checkbox to allow/disallow maximum CPU limit.
+            - A spin box to set the maximum CPU limit (percentage).
+            - A spin box to set the average reading interval (in seconds).
+        Returns:
+            QWidget: The widget containing the scaling settings layout.
+        """
+
         scalling_widget = QWidget()
         main_layout = QVBoxLayout()
 
@@ -342,7 +402,16 @@ class SettingsWindow(QDialog):
 
         return scalling_widget
 
-    def window_specefy(self):
+    def window_specefy(self) -> QWidget:
+        """
+        Creates and configures a QWidget containing various radio buttons, checkboxes, text inputs, and labels
+        for specifying window selection options in the application's settings UI.
+        The widget allows users to choose between applying settings to all windows, including or excluding specific windows,
+        or specifying a particular window or application. The layout is organized vertically with appropriate spacing.
+        Returns:
+            QWidget: The configured QWidget containing all window selection controls.
+        """
+
         window_widget = QWidget()
         main_layout = QVBoxLayout()
 
@@ -410,7 +479,16 @@ class SettingsWindow(QDialog):
 
         return window_widget
 
-    def showDialog(self):
+    def showDialog(self) -> None:
+        """
+        Opens a QColorDialog for the user to select a color.
+        If the user selects a valid color and accepts the dialog, updates the instance's color attributes
+        and sets the background and text color of the label (`self.lbl`) to the selected color.
+        If the dialog is canceled or closed, prints a message to the console.
+        Returns:
+            None
+        """
+
         # Create the QColorDialog with 'self' as the parent
         color_dialog = QColorDialog(self)
 
@@ -433,7 +511,17 @@ class SettingsWindow(QDialog):
             # Handle the case when the dialog was canceled or closed
             print("Color dialog was canceled or closed")
 
-    def create_object_and_cover_properties(self):
+    def create_object_and_cover_properties(self) -> QWidget:
+        """
+        Creates and configures the main widget containing UI elements for object and cover property settings.
+        This method constructs a QWidget with various controls for selecting cover type (blur, background color, color),
+        picking a color, selecting object detection options (male, female, NSFW), setting activity status, accuracy,
+        and engine selection. The widget layout is organized using QVBoxLayout and QHBoxLayout for proper alignment
+        and spacing of the controls. The method also initializes the state of each control based on the current settings.
+        Returns:
+            QWidget: The configured widget containing all object and cover property controls.
+        """
+
         object_and_cover_widget = QWidget()
         main_layout = QVBoxLayout()
 
@@ -565,7 +653,16 @@ class SettingsWindow(QDialog):
 
         return object_and_cover_widget
 
-    def create_accuracy_properties(self):
+    def create_accuracy_properties(self) -> QWidget:
+        """
+        Creates and returns a QWidget containing UI elements for configuring network accuracy properties.
+        The widget includes labeled spin boxes for setting the network width and height,
+        with appropriate ranges and default values taken from self.settings. Layouts and spacing
+        are used to organize the UI elements vertically and horizontally.
+        Returns:
+            QWidget: The widget containing the accuracy property controls.
+        """
+
         accuracy_widget = QWidget()
         main_layout = QVBoxLayout()
 
@@ -610,7 +707,18 @@ class SettingsWindow(QDialog):
 
         return accuracy_widget
 
-    def create_timeout_properties(self):
+    def create_timeout_properties(self) -> QWidget:
+        """
+        Creates and returns a QWidget containing timeout-related properties with labels and spin boxes for user input.
+        The widget includes:
+            - "Active (ms)": QSpinBox for setting the active timeout in milliseconds.
+            - "Sleep (ms)": QSpinBox for setting the sleep timeout in milliseconds.
+            - "Keep running (s)": QSpinBox for setting the keep running timeout in seconds.
+        Each spin box is initialized with values from self.settings and has appropriate range and step settings.
+        Returns:
+            QWidget: The widget containing the timeout property controls.
+        """
+
         timeout_widget = QWidget()
         main_layout = QVBoxLayout()
 
@@ -663,7 +771,16 @@ class SettingsWindow(QDialog):
         timeout_widget.setLayout(main_layout)
         return timeout_widget
 
-    def create_additional_options_properties(self):
+    def create_additional_options_properties(self) -> QWidget:
+        """
+        Creates and configures the additional options properties widget for the settings window.
+        This method initializes various UI elements such as checkboxes, labels, and line edits
+        for additional settings options, including hardware acceleration, auto startup, priority settings,
+        hotkeys, and dataset path. It also checks and sets the auto startup status from the Windows registry.
+        All widgets are arranged in a vertical layout and returned as a QWidget.
+        Returns:
+            QWidget: The widget containing all additional options properties.
+        """
 
         additional_options_widget = QWidget()
 
@@ -727,18 +844,7 @@ class SettingsWindow(QDialog):
         dataset_path_label = QLabel("Dataset Path")
         self.dataset_path = QLineEdit(self.settings["dataset_path"])
 
-        # Create a QVBoxLayout for additional_options_widget
         layout = QVBoxLayout()
-
-        # Add spacing between layouts
-        # layout.addWidget(self.checkbox_hardware_acceleration)
-        # layout.addSpacing(10)
-        # layout.addWidget(self.checkbox_specific_window)
-        # layout.addSpacing(10)
-        # layout.addWidget(specific_window_label)
-        # layout.addWidget(self.specific_window_name)
-
-        # layout.addWidget(self.checkbox_static_cover)
         layout.addSpacing(10)
         layout.addWidget(self.checkbox_auto_startup)
         layout.addSpacing(10)
@@ -763,7 +869,20 @@ class SettingsWindow(QDialog):
 
     # ===========================================================
 
-    def save_settings_value(self):
+    def save_settings_value(self) -> None:
+        """
+        Saves the current settings from the UI components to the settings dictionary and persists them.
+        This method collects values from various UI elements (such as spin boxes, checkboxes, and text fields),
+        updates the internal settings dictionary accordingly, and saves the settings using the SettingsValue class.
+        Side effects:
+            - Updates self.settings with the latest values from the UI.
+            - May modify Windows registry for auto-startup.
+            - May display messages to the user via the message.show_message method.
+            - Persists settings using SettingsValue.save_settings.
+        Returns:
+            None
+        """
+
         print(" enter insave method")
 
         self.settings["accuracy"] = self.spinBoxForAccuracy.value()
@@ -785,11 +904,6 @@ class SettingsWindow(QDialog):
         self.settings["object"] = self.object_combobox.currentText()
         self.settings["is_detect_male"] = self.male_checkbox.isChecked()
         self.settings["is_detect_female"] = self.female_checkbox.isChecked()
-
-        """if self.activity_status_combobox.currentIndex() == 0:
-            self.settings["activity_status"] = True
-        else:
-            self.settings["activity_status"] = False"""
 
         if self.button_text == "deactive":
             self.settings["activity_status"] = True
@@ -917,7 +1031,16 @@ class SettingsWindow(QDialog):
             self.default_settings_value()
             message.show_message(f"Error while saving settings Setting: {e}")
 
-    def update_setting(self):
+    def update_setting(self) -> None:
+        """
+        Updates the current settings dictionary with the latest values from the UI components.
+        This method retrieves the current values from various UI elements such as spin boxes,
+        checkboxes, combo boxes, and text inputs, and updates the `self.current_settings` dictionary
+        accordingly. It also triggers the parent object's `update_settings` method to reflect the changes.
+        Returns:
+            None
+        """
+
         self.current_settings["accuracy"] = self.spinBoxForAccuracy.value()
         self.current_settings["network_width"] = self.spinBoxForNetworkWidth.value()
         self.current_settings["network_height"] = self.spinBoxForNetworkHeight.value()
@@ -965,7 +1088,15 @@ class SettingsWindow(QDialog):
 
         self.parent.update_settings(True)
 
-    def default_settings_value(self):
+    def default_settings_value(self) -> None:
+        """
+        Resets all UI elements to their default settings values.
+        This method retrieves the default settings from `SettingsValue.default_settings`
+        and updates the corresponding UI widgets (spin boxes, checkboxes, labels, combo boxes, etc.)
+        to reflect these default values. It also updates the style of the label to match the default RGB color.
+        Returns:
+            None: This method does not return any value.
+        """
 
         default_settings = SettingsValue.default_settings
 
@@ -1004,7 +1135,18 @@ class SettingsWindow(QDialog):
         self.include_window_input.setText(default_settings["include_windows"])
 
     # ===========================================================
-    def get_window_to_detect(self):
+    def get_window_to_detect(self) -> str:
+        """
+        Determines which window selection option is currently checked and returns a corresponding string identifier.
+        Returns:
+            str: A string indicating the selected window detection mode. Possible values are:
+                - "all": All windows are selected.
+                - "excluded": Excluded windows are selected.
+                - "included": Included windows are selected.
+                - "get_app_for_excluded_windows": Get app for excluded windows is selected.
+                - "get_app_for_included_windows": Get app for included windows is selected.
+        """
+
         if self.all_windows_checkbox.isChecked():
             return "all"
         elif self.exclude_windows_checkbox.isChecked():
@@ -1017,13 +1159,28 @@ class SettingsWindow(QDialog):
             print("======Included App===========")
             return "get_app_for_included_windows"
 
-    def get_included_windows(self):
+    def get_included_windows(self) -> list[str]:
+        """
+        Retrieves a list of included window names from the input field.
+        The method reads the text from the `include_window_input` widget, splits it by commas,
+        strips whitespace from each item, and returns a list of non-empty window names.
+        Returns:
+            list[str]: A list of included window names as strings.
+        """
+
         windows = self.include_window_input.toPlainText()
         window_list = [item.strip() for item in windows.split(",") if item]
         print(f"Included window: {window_list}")
         return window_list
 
-    def get_excluded_windows(self):
+    def get_excluded_windows(self) -> list[str]:
+        """
+        Retrieves a list of excluded window names from the input field.
+        The method reads the text from the `exclude_window_input` widget, splits it by commas,
+        strips whitespace from each entry, and returns the resulting list of window names.
+        Returns:
+            list[str]: A list of excluded window names as strings.
+        """
 
         windows = self.exclude_window_input.toPlainText()
         window_list = [item.strip() for item in windows.split(",") if item]
@@ -1031,7 +1188,25 @@ class SettingsWindow(QDialog):
         return window_list
 
     # ===========================================
-    def change_status(self):
+    def change_status(self) -> None:
+        """
+        Toggles the status of the settings window between 'active' and 'deactive' modes.
+        When activated:
+            - Updates button text and window title to indicate active status.
+            - Sets the parent's status_button_state to True.
+            - Sets the activity status combobox to the active index.
+            - Starts the detection timer if the parent is ready.
+            - Updates parent's mode flags.
+        When deactivated:
+            - Updates button text and window title to indicate inactive status.
+            - Sets the parent's status_button_state to False.
+            - Sets the activity status combobox to the inactive index.
+            - Stops the detection timer.
+            - Updates parent's mode flags.
+        Returns:
+            None
+        """
+
         print("change_status method in Setting")
 
         if self.button_text == "active":
@@ -1057,49 +1232,112 @@ class SettingsWindow(QDialog):
             self.setWindowTitle(f"{self.title} - is not Active")
 
     # ---------------------------------------------------------------------------
-    def on_ok_button_clicked(self):
-        # Update the attribute of the parent class
-        # self.parent.update_settings(True)
+    def on_ok_button_clicked(self) -> None:
+        """
+        Handles the event when the OK button is clicked.
+        This method is typically connected to the OK button in a dialog window.
+        It performs any necessary updates (such as updating parent settings, if enabled)
+        and then accepts the dialog, closing it with a success result.
+        Returns:
+            None
+        """
 
         self.accept()
 
-    def getDetectionAccuracy(self):
+    def getDetectionAccuracy(self) -> int:
+        """
+        Retrieves the current detection accuracy value from the spin box.
+        Returns:
+            int: The value representing the detection accuracy.
+        """
+
         return self.spinBoxForAccuracy.value()
 
-    def getNetworkWidth(self):
+    def getNetworkWidth(self) -> int:
+        """
+        Returns the network width as an integer.
+        Multiplies the current value of spinBoxForNetworkWidth by 32 and returns the result as an integer.
+        Returns:
+            int: The calculated network width.
+        """
+
         return int(self.spinBoxForNetworkWidth.value() * 32)
 
-    def getNetworkHeight(self):
+    def getNetworkHeight(self) -> int:
+        """
+        Calculates and returns the network height based on the value of the spin box.
+        Multiplies the current value of `spinBoxForNetworkHeight` by 32 and returns the result as an integer.
+        Returns:
+            int: The calculated network height.
+        """
+
         return int(self.spinBoxForNetworkHeight.value() * 32)
 
     # ---------------------------------------------------------------------------
 
     # -------------TIMEOUT-------------------------------------------------------
-    def getActiveTimeOut(self):
+    def getActiveTimeOut(self) -> int:
+        """
+        Retrieves the current value of the active timeout setting.
+        Returns:
+            int: The value of the active timeout from the spin box.
+        """
         return self.spinBoxActiveTimeout.value()
 
-    def getSleepTimeOut(self):
+    def getSleepTimeOut(self) -> int:
+        """
+        Retrieves the current sleep timeout value from the spin box.
+        Returns:
+            int: The value of the sleep timeout as set in the spin box.
+        """
         return self.spinBoxSleepTimeout.value()
 
-    def getKeepActiveTime(self):
+    def getKeepActiveTime(self) -> int:
+        """
+        Retrieves the current value from the 'Keep Active Time' spin box.
+        Returns:
+            int: The value set in the spinBoxKeepActiveTime widget.
+        """
         return self.spinBoxKeepActiveTime.value()
 
     # --------------------------------------------------------------------------
 
     # ========= Engine ============================================================
-    def getEngine(self):
-
+    def getEngine(self) -> str:
+        """
+        Retrieves the currently selected engine from the engine combobox.
+        Returns:
+            str: The name of the currently selected engine.
+        """
         return self.engine_combobox.currentText()
 
     # ===========================================================================
 
-    def getBlurKernel(self):
+    def getBlurKernel(self) -> int:
+        """
+        Returns the kernel size to be used for blurring operations.
+        Returns:
+            int: The size of the blur kernel.
+        """
         return 0  # self.spin_box_for_blur_kernel.value()
 
-    def getObjectCombobox(self):
+    def getObjectCombobox(self) -> str:
+        """
+        Returns the currently selected text from the object_combobox.
+        Returns:
+            str: The text of the currently selected item in the combobox.
+        """
         return self.object_combobox.currentText()  # here i return the index number
 
-    def getStatus(self):
+    def getStatus(self) -> bool:
+        """
+        Updates the window title based on the current button text and returns the activity status.
+        If the button text is "deactive", sets the window title to indicate the application is active and returns True.
+        Otherwise, sets the window title to indicate the application is not active and returns False.
+        Returns:
+            bool: True if the application is active, False otherwise.
+        """
+
         # if self.activity_status_combobox.currentIndex() == 0:
         if self.button_text == "deactive":
             self.setWindowTitle(f"{self.title} - is Active")
@@ -1111,16 +1349,36 @@ class SettingsWindow(QDialog):
     # =======================================================================
 
     # ----------------------------------------------------------------------
-    def isHardwareAccelarationEnabled(self):
+    def isHardwareAccelarationEnabled(self) -> bool:
+        """
+        Checks if hardware acceleration is enabled by verifying the state of the corresponding checkbox.
+        Returns:
+            bool: True if hardware acceleration is enabled, False otherwise.
+        """
         return self.checkbox_hardware_acceleration.isChecked()
 
-    def isSpecificWindowEnabled(self):
+    def isSpecificWindowEnabled(self) -> bool:
+        """
+        Checks if the 'Specific Window' checkbox is enabled.
+        Returns:
+            bool: True if the 'Specific Window' checkbox is checked, False otherwise.
+        """
         return self.checkbox_specific_window.isChecked()
 
-    def isSpecificAppEnabled(self):
+    def isSpecificAppEnabled(self) -> bool:
+        """
+        Checks if the 'Specific App' checkbox is enabled.
+        Returns:
+            bool: True if the 'Specific App' checkbox is checked, False otherwise.
+        """
         return self.checkbox_specific_app.isChecked()
 
-    def SpecificWindowAppName(self):
+    def SpecificWindowAppName(self) -> str | None:
+        """
+        Retrieves the first application name from a comma-separated list entered in the specific_window_name text field.
+        Returns:
+            str or None: The first application name if available, otherwise None.
+        """
         apps = self.specific_window_name.text()
         app_list = [item.strip() for item in apps.split(",") if item]
         if app_list:
@@ -1128,28 +1386,51 @@ class SettingsWindow(QDialog):
         else:
             return None
 
-    def isStaticCoverEnabled(self):
+    def isStaticCoverEnabled(self) -> bool:
+        """
+        Checks if the static cover option is enabled.
+        Returns:
+            bool: True if the static cover checkbox is checked, False otherwise.
+        """
         return self.checkbox_static_cover.isChecked()
 
-    def isStaticCoverForSpecificWindow(self):
+    def isStaticCoverForSpecificWindow(self) -> bool:
+        """
+        Checks whether the 'static cover for specific window' option is enabled.
+        Returns:
+            bool: True if the checkbox for static cover for a specific window is checked, False otherwise.
+        """
         return self.checkbox_static_cover_for_specific_window.isChecked()
 
-    def isAutoStartup(self):
+    def isAutoStartup(self) -> bool:
+        """
+        Checks if the auto startup option is enabled.
+        Returns:
+            bool: True if the auto startup checkbox is checked, False otherwise.
+        """
         return self.checkbox_auto_startup.isChecked()
 
     # ===============================================================
 
-    def closeEvent(self, event):
+    def closeEvent(self):
+        """
+        Handles the close event for the settings window.
+        This method sets a flag indicating that the application is about to close,
+        and then calls the parent's method to close the application.
+        Returns:
+            None
+        """
         self.application_is_about_to_close = True
-        # self.accept()
         self.parent.closetheapp()
 
-    def close_app(self):
+    def close_app(self) -> None:
+        """
+        Handles the application close event by setting the appropriate flag and invoking the parent's close method.
+        This method sets the `application_is_about_to_close` attribute to True, calls the `closetheapp` method of the parent object to initiate the closing process, and prints debug messages.
+        Returns:
+            None
+        """
         print("close print")
         self.application_is_about_to_close = True
-        # self.accept()
         self.parent.closetheapp()
         print("close print")
-
-        # QApplication.quit()
-        # sys.exit()

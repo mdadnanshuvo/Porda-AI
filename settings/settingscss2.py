@@ -50,4 +50,3 @@ QCheckBox, QRadioButton {
     font-size: 16px;
 }
 """
-
